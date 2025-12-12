@@ -69,6 +69,7 @@ void showInfo() {
 // 모닝스터디에서 배운 파일을 불러오는 방법을 사용했다.
 // 'students.txt' 파일에 있는 정보를 불러옴. 학생의 이름과 점수
 
+--------------------------------------------------------------------------------과제
 void main() async{
   
   File txtFile = File('students.txt');
@@ -140,7 +141,7 @@ main에서 print 출력을 시도했으나 반복문 사용을 해야 하는 것
   클래스의 구조는 만들고 값이 주어지면 정상 출력 되는 것 까지는 확인이 완료되었다.
 
 
-
+--------------------------------------------------------------------------------과제
 
 
 ## 2. 파일로부터 데이터 읽어오기 기능
@@ -199,6 +200,80 @@ main에서 print 출력을 시도했으나 반복문 사용을 해야 하는 것
         - 출력의 경우 StudentScore 클래스의 `showInfo()` 메서드를 통해 출력하면 됨
     - 다른 값이 입력되면 `"잘못된 학생 이름을 입력하셨습니다. 다시 입력해주세요."`를 출력하고 다시 입력을 받기
         - 이 동작은 올바른 값(홍길동/김철수)이 입력될 때까지 반복된다.
+
+
+--------------------------------------------------------------------------------과제
+
+void main() async{
+
+  File txtFile = File('students.txt'); // 파일의 객체를 생성
+  String content = await txtFile.readAsString(); // 파일을 문자열로 불러옴
+  List<String> lines = content.split('\n'); // 문자를 구분해 줌
+  // print(lines);
+
+  List<StudentScore> studentList = []; 
+  // 3) 파일의 리스트를 반복문으로 불러온다.
+  for (var l in lines) {
+    List<String> nameAndScore = l.split(','); // 줄이 나뉘었으니 , 단위로 구분한다.
+    String name = nameAndScore[0]; 
+    int score = int.parse(nameAndScore[1]); 
+    StudentScore s = StudentScore(name, score);
+    studentList.add(s);
+  }
+  print("어떤 학생의 점수를 확인하시겠습니까?");
+  // print(studentList.length); 
+
+  // 리스트에 담긴 학생 이름과 input이라는 입력값과 비교
+  String input = stdin.readLineSync()!; // !: 빈 값이 들어올 수 없다고 명시
+  StudentScore? findPerson = null;
+  
+  for (StudentScore student in studentList) { // var=StudentScore
+   // student.showInfo();
+   if (input == student.name) {
+     findPerson = student;
+     break;
+   }
+  }
+  if(findPerson == null) {
+    print("잘못된 학생이름을 입력하였습니다.");
+  } else {
+    print("찾는 학생의 이름: ${findPerson.name}, 찾는 학생의 점수: ${findPerson.scores}");
+  }
+  
+}
+
+// 필수정의. 1. 점수를 표현하기 위한 Score클래스
+// 1) 학생의 이름과 점수가 담긴 클래스를 먼저 만들어준다.
+class Score {
+  int scores;
+  Score(this.scores);
+
+  void showInfo() {
+    print("점수: $scores");
+  }
+
+}
+
+// 2) `Score`의 상속을 받은 자식 클래스를 만들어준다.
+class StudentScore extends Score {
+
+  String name;
+  StudentScore(this.name,super.scores); 
+  
+  @override 
+  void showInfo() {
+    print("이름: $name, 점수: $scores");
+  }
+}
+
+=> 커맨드 창에서 학생 이름을 입력하면 정상적으로 찾는 학생의 이름, 찾는 학생의 점수가 뜬다.
+
+-------------트러블슈팅---------------
+1. null 값을 넣어서 찾는 학생이 없을 경우를 가정했어야 했다.
+2. 터미널에서 결과를 출력하고 싶을 때 dart run을 실행하고 했어야 하는 부분에서 헤맸다.
+
+
+--------------------------------------------------------------------------------과제
 
 
 ## 4. 프로그램 종료 후, 결과를 파일에 저장하는 기능

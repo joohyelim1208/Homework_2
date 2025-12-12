@@ -1,28 +1,39 @@
-import 'package:score_advanced/score_advanced.dart' as score_advanced;
 import 'dart:io';
 
 void main() async{
 
-  File txtFile = File('students.txt');
-  String content = await txtFile.readAsString(); 
-  List<String> lines = content.split('\n');
-  print(lines);
+  File txtFile = File('students.txt'); // 파일의 객체를 생성
+  String content = await txtFile.readAsString(); // 파일을 문자열로 불러옴
+  List<String> lines = content.split('\n'); // 문자를 구분해 줌
+  // print(lines);
 
   List<StudentScore> studentList = []; 
-  
   // 3) 파일의 리스트를 반복문으로 불러온다.
   for (var l in lines) {
-    List<String> nameAndScore = l.split(','); 
+    List<String> nameAndScore = l.split(','); // 줄이 나뉘었으니 , 단위로 구분한다.
     String name = nameAndScore[0]; 
     int score = int.parse(nameAndScore[1]); 
     StudentScore s = StudentScore(name, score);
     studentList.add(s);
   }
+  print("어떤 학생의 점수를 확인하시겠습니까?");
+  // print(studentList.length); 
 
-  print(studentList.length); // 여기까지가 1번 과제. 
-
-  for (var student in studentList) { 
-   student.showInfo();
+  // 리스트에 담긴 학생 이름과 input이라는 입력값과 비교
+  String input = stdin.readLineSync()!; // !: 빈 값이 들어올 수 없다고 명시
+  StudentScore? findPerson = null;
+  
+  for (StudentScore student in studentList) { // var=StudentScore
+   // student.showInfo();
+   if (input == student.name) {
+     findPerson = student;
+     break;
+   }
+  }
+  if(findPerson == null) {
+    print("잘못된 학생이름을 입력하였습니다.");
+  } else {
+    print("찾는 학생의 이름: ${findPerson.name}, 찾는 학생의 점수: ${findPerson.scores}");
   }
   
 }
@@ -50,8 +61,3 @@ class StudentScore extends Score {
     print("이름: $name, 점수: $scores");
   }
 }
-
-
-// 12/11 할 것(업로드 전에 지우기)
-// 깃허브에 1번문제 풀이까지 업로드. 트러블슈팅 까지 한 뒤 TIL만들어서 제출 12시 전 까지.
-// 12일에 오전에 스터디 끝나고 10시 반부터 2번 문제 튜터님과 함께 함.
